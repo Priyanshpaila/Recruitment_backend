@@ -1,8 +1,8 @@
-import helmet from 'helmet';
-import cors from 'cors';
-import hpp from 'hpp';
-import mongoSanitize from 'express-mongo-sanitize';
-import xss from 'xss-clean';
+import helmet from "helmet";
+import cors from "cors";
+import hpp from "hpp";
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
 
 export function securityMiddlewares() {
   return [
@@ -10,6 +10,6 @@ export function securityMiddlewares() {
     cors({ origin: true, credentials: true }),
     hpp(),
     mongoSanitize(),
-    xss()
+    xss(),
   ];
 }

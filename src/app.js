@@ -5,11 +5,13 @@ import { httpLogger } from './utils/logger.js';
 import { errorHandler, notFound } from './middlewares/error.js';
 import api from './routes/index.js';
 import { requestId } from './middlewares/requestId.js';
+import cors from "cors";
 
 export function createApp() {
   const app = express();
   app.disable('x-powered-by');
   app.use(express.json({ limit: '1mb' }));
+  app.use(cors({ origin: ['http://192.168.13.78:5173', 'http://localhost:5173'] , credentials: true }));
   app.use(express.urlencoded({ extended: true }));
   app.use(requestId);
   app.use(httpLogger);
