@@ -151,3 +151,51 @@ export const listUsers = async (req, res, next) => {
     next(e);
   }
 };
+
+// Fetch a single user by id (admin OR the same user)
+export const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // basic ObjectId validation
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid user id" });
+    }
+
+    // Who is calling?
+    const requestingUser = await User.findById(req.user.id).lean();
+    if (!requestingUser) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const isAdmin = (requestingUser.role ?? "user") === "admin";
+    const isSelf = requestingUser._id.toString() === id;
+
+    if (!isAdmin && !isSelf) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: only admin or same user can view this user" });
+    }
+
+    const user = await User.findById(id).lean();
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Never send passwordHash
+    const responseUser = {
+      id: user._id,
+      phone: user.phone ?? null,
+      email: user.email ?? null,
+      name: user.name ?? null,
+      photoFileId: user.photoFileId ?? null,
+      role: user.role ?? "user",
+      postAppliedFor: user.postAppliedFor ?? null,
+      createdAt: user.createdAt ?? null,
+    };
+
+    return res.json({ user: responseUser });
+  } catch (e) {
+    next(e);
+  }
+};

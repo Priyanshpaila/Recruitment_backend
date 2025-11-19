@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import { Readable } from "stream";
 
 import { requireAuth } from "../middlewares/auth.js";
-import { me, getPhoto, createUser, listUsers } from "../controllers/user.controller.js";
+import { me, getPhoto, createUser, listUsers, getUserById } from "../controllers/user.controller.js";
 import { getBucket } from "../config/gridfs.js";
 
 const router = Router();
@@ -25,7 +25,10 @@ router.get("/photo/:fileId", getPhoto);
 router.post("/create", requireAuth, createUser);
 
 //Admin-only list of all users
-router.get("/listusers", requireAuth, listUsers)
+router.get("/listusers", requireAuth, listUsers);
+
+//Get user by id
+router.get("/:id", requireAuth, getUserById);
 
 router.post(
   "/me/photo",
