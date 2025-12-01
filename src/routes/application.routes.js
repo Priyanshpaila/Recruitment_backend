@@ -16,7 +16,7 @@ router.post("/submit", requireAuth, submitApplication);
 router.get("/:userId", requireAuth, viewApplication);
 
 // Route for admin to update the application form (fill missing fields)
-router.post("/application/update/:userId", requireAuth, updateApplication);
+router.put("/application/update/:userId", requireAuth, updateApplication);
 
 // Route to get the full form data (for frontend to generate PDF)
 router.get("/application/data/:userId", requireAuth, getFormData);
