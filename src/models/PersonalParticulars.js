@@ -19,7 +19,7 @@ const DependentSchema = new Schema(
     name: { type: String, required: true, trim: true },
     relationship: { type: String, required: true, trim: true },
     dateOfBirth: { type: Date },
-    reasonOfDependency: { type: String, trim: true },
+    reason: { type: String, trim: true },
   },
   { _id: false }
 );
@@ -51,17 +51,21 @@ const LanguageSchema = new Schema(
 
 const PastEmploymentSchema = new Schema(
   {
+    serial: { type: String },
     employerName: { type: String, required: true, trim: true },
     employerAddress: { type: String, trim: true },
     designation: { type: String, trim: true },
-    from: { type: Date },
-    to: { type: Date },
-    salaryOnJoining: { type: Number },
-    salaryOnLeaving: { type: Number },
+    employedFrom: { type: Date },
+    employedTo: { type: Date },
+    salaryDrawnJoining: { type: Number },
+    salaryDrawnLeaving: { type: Number },
     reasonForLeaving: { type: String, trim: true },
   },
   { _id: false }
 );
+
+
+
 
 const PromotionSchema = new Schema(
   {
@@ -218,8 +222,17 @@ const PersonalParticularsSchema = new Schema(
     otherIncomeSource: { type: String, trim: true },
     otherIncomeAmount: { type: Number },
     courtProceedingsDetails: { type: String, trim: true },
-    seriousIllnessDetails: { type: String, trim: true },
-    physicalDisabilityDetails: { type: String, trim: true },
+    otherQualifications: { type: String, trim: true },
+
+  
+
+
+    //medical history
+    medicalHistory: {
+        seriousIllness: { type: String, trim: true },
+        physicalDisability: { type: String, trim: true },
+        },
+
 
     // Education
     educationHistory: [EducationSchema],
@@ -228,39 +241,50 @@ const PersonalParticularsSchema = new Schema(
     languagesKnown: [LanguageSchema],
 
     // Extra-curricular
-    literaryCulturalArts: { type: String, trim: true },
-    socialActivities: { type: String, trim: true },
+    extraCurricularLiteraryCulturalArts: { type: String, trim: true },
+    extraCurricularSocial: { type: String, trim: true },
     hobbiesInterests: { type: String, trim: true },
 
     // Past employment (excluding present)
     pastEmployment: [PastEmploymentSchema],
 
+    // Last 3 employment
+    lastThreeEmployments: [
+      {
+        designationScope: { type: String, trim: true },
+        supervisorNameDesignation: { type: String, trim: true },
+      }
+    ],
+
+
     // Present employment
-    presentEmployerName: { type: String, trim: true },
-    presentEmployerAddress: { type: String, trim: true },
-    dateOfAppointment: { type: Date },
+    presentEmployerNameAddress: { type: String, trim: true },
+    presentEmploymentDateOfAppointment: { type: Date },
     designationOnJoining: { type: String, trim: true },
     presentDesignation: { type: String, trim: true },
 
     promotions: [PromotionSchema],
 
     presentPositionInHierarchy: { type: String, trim: true },
-    responsibilitiesPresentRole: { type: String, trim: true },
+    detailedScopeOfResponsibilitiesPresent: { type: String, trim: true },
     importantAspectsOfExperience: { type: String, trim: true },
 
     reasonForSeekingNewAppointment: { type: String, trim: true },
     appearedForTestOrInterviewEarlier: { type: Boolean, default: false },
-    appearedForTestOrInterviewDetails: { type: String, trim: true },
+    appearedForTestOrInterviewEarlierDetails: { type: String, trim: true },
     presentEmployerAwareOfApplication: { type: Boolean, default: false },
     relatedToAnyDirector: { type: Boolean, default: false },
-    directorRelationshipDetails: { type: String, trim: true },
+    relatedToAnyDirectorDetails: { type: String, trim: true },
     noticePeriodToJoin: { type: String, trim: true },
     allowRetainNameOnFileIfUnsuccessful: { type: Boolean, default: false },
 
     // Professional training
     professionalTrainingCourses: [TrainingCourseSchema],
-
     additionalInformation: { type: String, trim: true },
+    additionalInformationItems: [{ type: String, trim: true }],
+    
+
+
 
     // Present emoluments / CTC breakdown
     emoluments: {
@@ -300,6 +324,14 @@ const PersonalParticularsSchema = new Schema(
       actionDate: { type: Date },
       actionSignatures: { type: String, trim: true },
     },
+
+      applicationStatus: {
+      type: String,
+      enum: ["submitted", "rejected"],
+      default: "submitted",
+      index: true
+    }
+
   },
   {
     versionKey: false,
